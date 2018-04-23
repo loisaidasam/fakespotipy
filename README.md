@@ -2,7 +2,13 @@
 
 A fake [spotipy](https://github.com/plamere/spotipy) client. For unit tests and stuff.
 
-## Usage:
+## Installation
+
+```
+pip install fakespotipy
+```
+
+## Usage
 
 ```python
 # Initialize the client
@@ -69,4 +75,10 @@ Traceback (most recent call last):
   File "fakespotipy.py", line 37, in method
     raise NotImplementedError
 NotImplementedError
+```
+
+## Testing
+
+```
+python setup.py test
 ```

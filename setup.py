@@ -10,5 +10,5 @@ setup(
     packages=["fakespotipy"],
     test_suite="tests",
     url="https://github.com/rcrdclub/fakespotipy",
-    version="0.3.0",
+    version="0.4.0",
 )
