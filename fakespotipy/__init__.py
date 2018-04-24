@@ -11,10 +11,14 @@ class FakeSpotify(object):
     # }>
     responses = None
 
+    # <list(<str>, ...)> list of calls made to client, for testing call history
+    call_history = None
+
     def __init__(self, *args, **kwargs):
-        """TODO: Do we need to persist any args/kwargs?
+        """TODO: Should we persist any constructor args/kwargs?
         """
         self.responses = {}
+        self.call_history = []
 
     def add_response(self, function_name, response):
         """
@@ -28,6 +32,7 @@ class FakeSpotify(object):
 
     def __getattr__(self, function_name):
         logger.info("Called `FakeSpotify.%s`", function_name)
+        self.call_history.append(function_name)
 
         def method(*args, **kwargs):
             if function_name not in self.responses:
