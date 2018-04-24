@@ -21,6 +21,10 @@ class ClientBasicTests(BaseTestCase, unittest.TestCase):
             self.client.not_a_real_method()
         self.assertEqual(self.client.call_history,
                          ['refresh_access_token', 'not_a_real_method'])
+        # Confirm reset works:
+        self.client.reset()
+        self.assertEqual(self.client.responses, {})
+        self.assertEqual(self.client.call_history, [])
 
 
 class ClientMockResponseObjectTests(BaseTestCase, unittest.TestCase):
@@ -44,6 +48,11 @@ class ClientMockResponseObjectTests(BaseTestCase, unittest.TestCase):
             self.client.refresh_access_token('refresh_token_str_here')
         self.assertEqual(self.client.call_history,
                          ['refresh_access_token', 'refresh_access_token'])
+        # Confirm reset works:
+        self.client.add_response('refresh_access_token', response)
+        self.client.reset()
+        self.assertEqual(self.client.responses, {})
+        self.assertEqual(self.client.call_history, [])
 
 
 class CustomException(Exception):
@@ -92,3 +101,9 @@ class ClientMockResponseFunctionTests(BaseTestCase, unittest.TestCase):
             'refresh_access_token',
             'refresh_access_token',
         ])
+        # Confirm reset works:
+        self.client.add_response('refresh_access_token',
+                                 self.mock_refresh_response)
+        self.client.reset()
+        self.assertEqual(self.client.responses, {})
+        self.assertEqual(self.client.call_history, [])

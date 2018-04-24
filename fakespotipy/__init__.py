@@ -17,6 +17,11 @@ class FakeSpotify(object):
     def __init__(self, *args, **kwargs):
         """TODO: Should we persist any constructor args/kwargs?
         """
+        self.reset()
+
+    def reset(self):
+        """Reset responses/call history
+        """
         self.responses = {}
         self.call_history = []
 
