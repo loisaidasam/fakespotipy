@@ -13,10 +13,14 @@ class ClientBasicTests(BaseTestCase, unittest.TestCase):
     def test_no_responses(self):
         # Sanity
         self.assertEqual(self.client.responses, {})
+        self.assertEqual(self.client.call_history, [])
         with self.assertRaises(NotImplementedError):
             self.client.refresh_access_token('foo')
+        self.assertEqual(self.client.call_history, ['refresh_access_token'])
         with self.assertRaises(NotImplementedError):
             self.client.not_a_real_method()
+        self.assertEqual(self.client.call_history,
+                         ['refresh_access_token', 'not_a_real_method'])
 
 
 class ClientMockResponseObjectTests(BaseTestCase, unittest.TestCase):
@@ -34,9 +38,12 @@ class ClientMockResponseObjectTests(BaseTestCase, unittest.TestCase):
         # And trigger it
         response_actual = self.client.refresh_access_token('refresh_token_str_here')
         self.assertEqual(response, response_actual)
+        self.assertEqual(self.client.call_history, ['refresh_access_token'])
         # If we try again, we get a NotImplementedError
         with self.assertRaises(NotImplementedError):
             self.client.refresh_access_token('refresh_token_str_here')
+        self.assertEqual(self.client.call_history,
+                         ['refresh_access_token', 'refresh_access_token'])
 
 
 class CustomException(Exception):
@@ -64,15 +71,24 @@ class ClientMockResponseFunctionTests(BaseTestCase, unittest.TestCase):
                                  self.mock_refresh_response)
         # Sanity
         self.assertEqual(self.called_func_counter, 0)
+        self.assertEqual(self.client.call_history, [])
         # Call it once
         response = self.client.refresh_access_token('refresh_token_str_here')
         self.assertEqual(self.called_func_counter, 1)
         self.assertEqual(response, {'foo': 'bar'})
+        self.assertEqual(self.client.call_history, ['refresh_access_token'])
         # Trigger again, using anticipated input to trigger custom Exception
         with self.assertRaises(CustomException):
             self.client.refresh_access_token('foo')
         self.assertEqual(self.called_func_counter, 2)
+        self.assertEqual(self.client.call_history,
+                         ['refresh_access_token', 'refresh_access_token'])
         # Try one more time, get NotImplementedError
         with self.assertRaises(NotImplementedError):
             self.client.refresh_access_token('foo')
         self.assertEqual(self.called_func_counter, 2)
+        self.assertEqual(self.client.call_history, [
+            'refresh_access_token',
+            'refresh_access_token',
+            'refresh_access_token',
+        ])
